@@ -1,0 +1,19 @@
+{
+  "name": "tpl",
+  "version": "1.0.0",
+  "description": "Node.JS cli tool for code templating and generation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "tpl": "./cli.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "change-case": "^3.0.1",
+    "yargs": "^8.0.1"
+  }
+}
