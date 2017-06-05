@@ -3,7 +3,7 @@
 
 Node.JS cli tool for code templating and generation, Inspired by [angular/angular-cli](https://github.com/angular/angular-cli) and [littleuniversestudios/angular-cli-tools](https://github.com/littleuniversestudios/angular-cli-tools).
 
-Automatically detects and converts case in code and file name.
+Automatically detects and converts cases in code and file name.
 
 # Supported cases
 * camelCase

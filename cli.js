@@ -86,7 +86,8 @@ function save(argv) {
     fs.mkdirSync(template_dir);
     fs.readdirSync(dir).forEach(filename => {
         fs.writeFileSync(path.join(template_dir, toTemplate(filename)), toTemplate(fs.readFileSync(path.join(dir, filename), { encoding: "UTF8" })));
-    })
+    });
+    console.log("Template created successfully.");
 }
 
 function gen(argv) {
@@ -105,8 +106,9 @@ function gen(argv) {
     }
     fs.mkdirSync(dir);
     global.targetname = path.basename(dir);
-    console.log(template_dir, fs.readdirSync(template_dir));
-    fs.readdirSync(template_dir).forEach(filename => {
+    let fileNames = fs.readdirSync(template_dir);
+    fileNames.forEach(filename => {
         fs.writeFileSync(path.join(dir, fromTemplate(filename)), fromTemplate(fs.readFileSync(path.join(template_dir, filename), { encoding: "UTF8" })));
-    })
+    });
+    console.log("Done! Generated " + fileNames.length + " file" + (fileNames.length > 1 ? "s" : ""));
 }
