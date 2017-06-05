@@ -3,6 +3,16 @@ const fs = require('fs');
 const path = require('path');
 const yargs = require('yargs');
 const changeCase = require('change-case');
+const findProjectRoot = require('find-project-root');
+
+const TEMPLATE_SAVE_PATH = path.join(findProjectRoot(process.cwd(), {
+    maxDepth: 12,
+    markers: ['.hg', '.git', '.idea', 'package.json', 'node_modules'],
+}), "tpl_templates");
+
+global.basename = "";
+global.targetname = "";
+global.cachedReplacementRules = {};
 
 //noinspection BadExpressionStatementJS,JSLastCommaInObjectLiteral
 require('yargs')
@@ -11,11 +21,6 @@ require('yargs')
     .command('gen [template_name] [dir]', 'generate directory from template', {}, gen)
     .help()
     .argv;
-
-
-global.basename = "";
-global.targetname = "";
-global.cachedReplacementRules = {};
 
 /*
  * {{nameCamel}}
@@ -76,9 +81,9 @@ function save(argv) {
     if (!dir || !template_name)
         return;
     global.basename = path.basename(dir);
-    if (!fs.existsSync("tpl_templates"))
-        fs.mkdirSync("tpl_templates");
-    const template_dir = path.join("tpl_templates", template_name);
+    if (!fs.existsSync(TEMPLATE_SAVE_PATH))
+        fs.mkdirSync(TEMPLATE_SAVE_PATH);
+    const template_dir = path.join(TEMPLATE_SAVE_PATH, template_name);
     if (fs.existsSync(template_dir)) {
         console.error(template_dir + " already exists.");
         return;
@@ -95,7 +100,7 @@ function gen(argv) {
     const template_name = argv["template_name"];
     if (!dir || !template_name)
         return;
-    const template_dir = path.join("tpl_templates", template_name);
+    const template_dir = path.join(TEMPLATE_SAVE_PATH, template_name);
     if (!fs.existsSync(template_dir)) {
         console.error(template_dir + " does not exist.");
         return;
