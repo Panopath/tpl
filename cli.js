@@ -15,7 +15,7 @@ require('yargs')
 
 global.basename = "";
 global.targetname = "";
-global.replacementRules = null;
+global.cachedReplacementRules = {};
 
 /*
  * {{nameCamel}}
@@ -24,8 +24,8 @@ global.replacementRules = null;
  * {{nameParam}}
  */
 function getReplacementRules() {
-    if (!global.replacementRules) {
-        global.replacementRules = [
+    if (!global.cachedReplacementRules[global.basename]) {
+        global.cachedReplacementRules[global.basename] = [
             {
                 search: global.basename,
                 replace: "{{nameCamel}}",
@@ -48,12 +48,12 @@ function getReplacementRules() {
                 changeCase: changeCase.param,
             },
         ];
-        global.replacementRules.forEach((rule) => {
+        global.cachedReplacementRules[global.basename].forEach((rule) => {
             rule.searchRegex = new RegExp(rule.changeCase(rule.search), 'g');
             rule.replaceRegex = new RegExp(rule.replace, 'g');
         });
     }
-    return global.replacementRules;
+    return global.cachedReplacementRules[global.basename];
 }
 
 function toTemplate(str) {
@@ -63,7 +63,7 @@ function toTemplate(str) {
     return str;
 }
 
-function fromTemplate(str, basename) {
+function fromTemplate(str) {
     getReplacementRules().forEach((rule) => {
         str = str.replace(rule.replaceRegex, rule.changeCase(global.targetname));
     });
@@ -110,5 +110,5 @@ function gen(argv) {
     fileNames.forEach(filename => {
         fs.writeFileSync(path.join(dir, fromTemplate(filename)), fromTemplate(fs.readFileSync(path.join(template_dir, filename), { encoding: "UTF8" })));
     });
-    console.log("Done! Generated " + fileNames.length + " file" + (fileNames.length > 1 ? "s" : ""));
+    console.log("Done! Generated " + fileNames.length + " file" + (fileNames.length > 1 ? "s." : "."));
 }
